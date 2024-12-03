@@ -1,0 +1,57 @@
+.userItem{
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+.userItem p{
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin: 0px 5px;
+    text-align: start;
+}
+
+/* message item  */
+.message-sender{
+    margin: 0;
+    font-size: .75rem;
+    font-weight: 700;
+}
+.message-content{
+    margin: 0;
+    white-space: pre-wrap;
+    font-size: .85rem;
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    word-break: break-word;
+}
+.message-content a.chat-link {
+    color: #5b9b20;
+    text-decoration: underline; 
+}
+.time-stamp{
+    text-align: end;
+    font-size: .6rem;
+    font-weight: 300;
+    color: #bebcbc;
+    margin: 0;
+    height: fit-content;
+    display: flex;
+    gap: 3px;
+    justify-content: end;
+}
+
+/* .table */
+.table{
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;  
+    height: 80%;
+    overflow-y: scroll;
+    padding: 15px;
+    flex-grow: 1;
+}
