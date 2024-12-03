@@ -16,7 +16,7 @@ import { ALERT, CHAT_JOINED, CHAT_LEAVED, MARK_MESSAGE_AS_SEEN, NEW_MESSAGE, STA
 import { useSocketEvents } from '../hooks/hook';
 import { useMyContext } from '../utils/context';
 import { useFetchData, useInfiniteScrollTop } from '6pp';
-import { TypingLoader } from '../components/layout/Loaders';
+import { CommonLoader, TypingLoader } from '../components/layout/Loaders';
 import { useNavigate } from 'react-router-dom';
 import { notifyError } from '../lib/Toasting';
 import messageSound from '../assets/sound/messageSound.mp3'
@@ -62,12 +62,12 @@ const Chat = ({ chatId }) => {
 
   const cacheKey = `chat_messages_${chatId}_page_${page}`;
 
-  const { data: oldMessagesChunk, error, clearCache } = useFetchData(
+  const { data: oldMessagesChunk, error, clearCache,  loading: isMessageloading  } = useFetchData(
     `${server}/api/v1/chat/messages/${chatId}?page=${page}`,
     cacheKey,
     [chatId, page]);
 
-  const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
+  const { data: oldMessages, setData: setOldMessages} = useInfiniteScrollTop(
     containerRef,
     oldMessagesChunk?.totalPages,
     page,
@@ -258,7 +258,6 @@ const Chat = ({ chatId }) => {
     }
   }, [messages])
 
-
   return (
     <>
       <motion.div
@@ -277,12 +276,18 @@ const Chat = ({ chatId }) => {
           padding:'1rem'
         }}
       >
-          {
-            allMessages.map((i) => { 
-              return <MessageItem key={i._id} message={i} user={myData} />
-            })
-          }
-    
+        {
+          oldMessagesChunk?.totalPages !== page 
+          &&
+          <CommonLoader />
+        }
+        
+        {
+          allMessages.map((i) => { 
+            return <MessageItem key={i._id} message={i} user={myData} />
+          })
+        }
+  
         {
           userTyping && <PulseLoader color="#c2f09d" />
         }

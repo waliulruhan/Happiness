@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useState, useEffect, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 import { notifyError, notifySuccess } from "../lib/Toasting";
 
@@ -62,5 +62,72 @@ const useAsyncMutation = (mutation) => {
       };
     }, [socket, handlers]);
   }
+
+  const useLazyLoadingTop = (
+    containerRef,
+    totalPages,
+    page,
+    setPage,
+    newData,
+    shouldReverse = false
+  ) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
   
-  export {useSocketEvents ,useErrors , useAsyncMutation};
+    const debounceTimer = useRef(null);
+  
+    const handleScroll = useCallback(() => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+  
+      debounceTimer.current = setTimeout(() => {
+        if (!containerRef.current) return;
+  
+        const { scrollTop } = containerRef.current;
+        const scrolledToTop = scrollTop === 0;
+  
+        if (scrolledToTop && !loading && hasMore) {
+          if (totalPages === page) return;
+          setLoading(true);
+          setPage((oldPage) => oldPage + 1);
+        }
+      }, 200);
+    }, [totalPages, page, loading, hasMore]);
+  
+    useEffect(() => {
+      const container = containerRef.current;
+  
+      if (container) container.addEventListener('scroll', handleScroll);
+  
+      return () => {
+        if (container) container.removeEventListener('scroll', handleScroll);
+      };
+    }, [handleScroll]);
+  
+    useEffect(() => {
+      if (newData && newData.length > 0) {
+        setHasMore(page < totalPages);
+  
+        setData((oldData) => {
+          const seen = new Set(oldData.map((i) => i._id));
+          const newMessages = newData.filter((i) => !seen.has(i._id));
+  
+          if (shouldReverse) {
+            return [...newMessages.reverse(), ...oldData];
+          } else {
+            return [...newMessages, ...oldData];
+          }
+        });
+      }
+  
+      if (loading) {
+        setLoading(false);
+      }
+    }, [newData, page, totalPages, shouldReverse, loading]);
+  
+    return { data, loading, hasMore, setData };
+  };
+  
+  export {useSocketEvents ,useErrors , useAsyncMutation, useLazyLoadingTop};
