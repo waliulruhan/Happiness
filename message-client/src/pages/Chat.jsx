@@ -111,7 +111,7 @@ const Chat = ({ chatId }) => {
         })
       }
     }   
-  }, [allMessages, myData._id , chatDetails]);
+  }, [myData._id , chatDetails]);
   
 
 
@@ -256,7 +256,7 @@ const Chat = ({ chatId }) => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }, [messages])
+  }, [messages, ])
 
   return (
     <>

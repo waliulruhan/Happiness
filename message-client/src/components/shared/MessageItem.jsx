@@ -27,10 +27,10 @@ const MessageItem = ({ message, user }) => {
                 onDoubleClick={()=> MessageItemEasterEgg(content)}
                 className='messageItem'
                 style={{                    
-                    backgroundColor: sameSender ? '#e1f0e1' : "#b5ffb5",
+                    backgroundColor: sameSender ? '#e1f0e1' : "#82d780",
                     color: "black",
-                    borderRadius: sameSender ? "5px 5px 0px 5px" : "5px 5px 5px 0px" ,
-                    padding: "2px 5px",
+                    borderRadius: sameSender ? "10px 10px 0px 10px" : "10px 10px 10px 0px" ,
+                    padding: "1px 8px",
                     width: "fit-content",
                 }}
             >
