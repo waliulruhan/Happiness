@@ -86,7 +86,6 @@ const Home = () => {
     const { myData } = useMyContext();
     const lastActiveTime = moment(myData.lastActive).format('h:mm:ss a');
     const lastActiveDate = moment(myData.lastActive).format('Do MMM YYYY');
-    console.log(myData, lastActiveTime);
 
     return (
         <div className='home-page'>

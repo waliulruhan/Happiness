@@ -16,8 +16,6 @@ import { server } from '../constants/config';
 import { notifyError, notifySuccess } from '../../lib/Toasting';
 import Cookies from 'js-cookie';
 
-import logo from '../../assets/image/happinessLogo.png';
-
 const SearchDialog = lazy(()=> import("../specific/Search"))
 const NotificationsDialog = lazy(()=> import("../specific/Notifications"))
 const NewGroupDialog = lazy(()=> import("../specific/NewGroup"))
@@ -56,7 +54,7 @@ const Header = () => {
     return (
         <div className='header'>
             <div className="header-logo flex-con">
-                <p style={{fontWeight:"700"}} onClick={()=>{ location.pathname !== "/" && navigate('/')}}>Happiness</p>
+              <p style={{fontWeight:"700"}} onClick={()=> {location.pathname !== "/" && navigate('/')}}>Happiness</p>
             </div>
             <div className="header-menu">
             <IconBtn
@@ -65,12 +63,7 @@ const Header = () => {
                 onClick={()=> setIsMobileChat(!isMobileChat)}
               />
             </div>
-
-            <div className='header-middle'>
-              <img src={logo} alt="logo" className="header-image" onClick={()=> { location.pathname !== "/" && navigate('/') }} />
-            </div>
-
-
+            <div style={{flexGrow:"1"}}></div>
             <div className="header-icons">
             <IconBtn
                 title={"Search"}

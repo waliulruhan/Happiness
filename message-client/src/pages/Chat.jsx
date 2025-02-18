@@ -23,10 +23,11 @@ import messageSound from '../assets/sound/messageSound.mp3'
 import { PulseLoader } from "react-spinners"
 import {motion} from "framer-motion"
 import { sampleMessage } from '../components/constants/sampleData';
+import ChatLayout from '../components/layout/ChatLayout';
 
 const messageTone = new Audio(messageSound)
 
-const Chat = ({ chatId }) => {
+const Chat = ({ chatId, chatDetails }) => {
   const navigate = useNavigate();
   const socket = getSocket();
   const { myData, newMessageAlert, setNewMessageAlert } = useMyContext()
@@ -39,7 +40,7 @@ const Chat = ({ chatId }) => {
   const [messages, setMessages] = useState([])
   const [page, setPage] = useState(1)
 
-  const [chatDetails, setChatDetails] = useState({})
+  // const [chatDetails, setChatDetails] = useState({})
   const chatDetailsRef = useRef(chatDetails)
 
   const [IamTyping, setIamTyping] = useState(false)
@@ -50,15 +51,15 @@ const Chat = ({ chatId }) => {
 
   const textareaRef = useRef(null)
 
-  const fetchChatDetails = async () => {
-    try {
-      const { data } = await axios.get(`${server}/api/v1/chat/${chatId}`, { withCredentials: true });
-      setChatDetails(data.chat);
-      chatDetailsRef.current = data.chat;
-    } catch (err) {
-      notifyError(err.response.data.message || "Something went wrong")
-    }
-  };
+  // const fetchChatDetails = async () => {
+  //   try {
+  //     const { data } = await axios.get(`${server}/api/v1/chat/${chatId}`, { withCredentials: true });
+  //     setChatDetails(data.chat);
+  //     chatDetailsRef.current = data.chat;
+  //   } catch (err) {
+  //     notifyError(err.response.data.message || "Something went wrong")
+  //   }
+  // };
 
   const cacheKey = `chat_messages_${chatId}_page_${page}`;
 
@@ -80,7 +81,7 @@ const Chat = ({ chatId }) => {
   }, [error])
 
   useEffect(() => {
-    fetchChatDetails();
+    // fetchChatDetails();
     setNewMessageAlert(newMessageAlert.filter(item => item.chatId !== chatId));
     clearCache()
     return () => {
@@ -89,7 +90,7 @@ const Chat = ({ chatId }) => {
       setMessage("");
       setOldMessages([]);
       setPage(1);
-      socket.emit(CHAT_LEAVED, { userId: myData._id, members: chatDetailsRef.current.members });
+      socket.emit(CHAT_LEAVED, { userId: myData._id, members: chatDetailsRef.current?.members });
       setUserTyping(false)
     };
   }, [chatId]);
@@ -355,4 +356,4 @@ const Chat = ({ chatId }) => {
 
 };
 
-export default AppLayout()(Chat);
+export default ChatLayout()(Chat);

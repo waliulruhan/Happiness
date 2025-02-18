@@ -214,6 +214,19 @@ const getMyProfile = TryCatch(async (req, res, next) => {
     
 
   })
+ 
+  const getUserInfo =TryCatch(async(req , res , next)=>{
+    const {userId} = req.body;
+    const user = await User.findById(userId);
+
+    return res.status(200).json({
+      success: true,
+      user,
+    })
+  
+  })
+
+
 
 module.exports={
     register,
@@ -225,5 +238,5 @@ module.exports={
     acceptRequest,
     getNotifications,
     getAllFriends,
-    
+    getUserInfo,
 }
