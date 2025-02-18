@@ -43,6 +43,16 @@
   margin: 0px;
 
 }
+.header-image{
+  height: 28px;
+  display: none;
+}
+.header-middle{
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .header-menu{
     display: none;
 }
@@ -89,4 +99,9 @@
   .header-menu{
     display: block;
   }
+  .header-image{
+    display: block;
+  }
+  
+
   }

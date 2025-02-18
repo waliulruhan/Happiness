@@ -27,6 +27,7 @@ const register= TryCatch(async(req , res , next)=>{
       username,
       password: hashedPassword,
       avatar,
+      lastActive: Date.now(),
     });
   
     sendToken(res, user, 201, "User created");

@@ -17,9 +17,11 @@ const { Server } = require('socket.io');
 const { NEW_MESSAGE, NEW_MESSAGE_ALERT, START_TYPING, STOP_TYPING, CHAT_JOINED, CHAT_LEAVED, CHAT_ONLINE_USERS, ONLINE_USERS, MARK_MESSAGE_AS_SEEN } = require('./constants/event');
 
 const Message = require('./models/messageModel');
+const Chat = require('./models/chatModel');
+
 const { corsOptions } = require('./constants/config');
 const { socketAuth } = require('./middlewares/auth');
-const Chat = require('./models/chatModel');
+const User = require('./models/userModel');
 
 
 dotenv.config()
@@ -81,6 +83,11 @@ io.use((socket , next)=>{
 
 io.on("connection" , (socket)=>{
     const user = socket.user;
+
+    User.findByIdAndUpdate(user._id, { lastActive: Date.now() })
+    .catch(err => console.error("Update failed:", err.message));
+
+      console.log(Date.now(), user._id)
 
     userSocketIDs.set(user._id.toString() , socket.id)
     onlineUsers.add(user.id);

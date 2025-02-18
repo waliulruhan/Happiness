@@ -3,6 +3,8 @@ import AppLayout from '../components/layout/AppLayout';
 import {motion} from"framer-motion"
 
 import StaggeredText from '../components/animated/staggeredText'
+import { useMyContext } from '../utils/context';
+import moment from 'moment';
 
 const AnimatedText =({children , font='2.3rem'})=>{
     const mainVariants ={
@@ -80,14 +82,23 @@ const AnimatedText =({children , font='2.3rem'})=>{
 
 }
 
-
 const Home = () => {
+    const { myData } = useMyContext();
+    const lastActiveTime = moment(myData.lastActive).format('h:mm:ss a');
+    const lastActiveDate = moment(myData.lastActive).format('Do MMM YYYY');
+    console.log(myData, lastActiveTime);
+
     return (
         <div className='home-page'>
             <StaggeredText>Welcome to </StaggeredText>
             <StaggeredText font='3rem' >HAPPINESS</StaggeredText>
             <p></p>
             <AnimatedText font='1.3rem' >Select a friend to chat</AnimatedText>
+
+            <div className="last-active-container">
+                <p className="last-active"> {lastActiveTime}</p>
+                <p className="last-active"> {lastActiveDate}</p>
+            </div>
 
         </div>
     );

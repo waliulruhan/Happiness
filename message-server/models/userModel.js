@@ -15,6 +15,10 @@ const userModel = new Schema({
         type: String,
         required: true,
     },
+    lastActive:{
+        type: Date,
+        required: true,
+    },
     avatar:{
         public_id:{
             type: String,
@@ -29,7 +33,6 @@ const userModel = new Schema({
         type: String,
         required: true,
         select: false,
-
     },
 },{
     timestamps: true,
@@ -37,3 +40,5 @@ const userModel = new Schema({
 
 const User = model("User" , userModel)
 module.exports = User;
+
+
