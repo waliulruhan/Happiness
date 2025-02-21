@@ -21,6 +21,22 @@
     font-size: .65rem;
     font-weight: 600;
 }
+.message-avatar{
+    position: absolute;
+    left: -14px;
+    bottom: 0px;
+    height: 12px;
+    width: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.message-avatar img{
+    height: 12px;
+    width: 12px;
+}
 .message-content{
     margin: 0;
     white-space: pre-wrap;

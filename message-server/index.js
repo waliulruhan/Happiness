@@ -87,8 +87,6 @@ io.on("connection" , (socket)=>{
     User.findByIdAndUpdate(user._id, { lastActive: Date.now() })
     .catch(err => console.error("Update failed:", err.message));
 
-      console.log(Date.now(), user._id)
-
     userSocketIDs.set(user._id.toString() , socket.id)
     onlineUsers.add(user.id);
 

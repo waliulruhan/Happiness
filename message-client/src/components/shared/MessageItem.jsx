@@ -9,7 +9,7 @@ import { DoneAll } from '@mui/icons-material';
 import {motion} from'framer-motion'
 import Reveal from '../animated/Reveal';
 
-const MessageItem = ({ message, user }) => {
+const MessageItem = ({ message, user, chatDetails }) => {
     const { sender, content, attachments = [], createdAt , seen } = message;
     const sameSender = sender?._id === user?._id;
     const timeAgo = moment(createdAt).format('Do MMM YYYY, h:mm:ss a');
@@ -32,10 +32,18 @@ const MessageItem = ({ message, user }) => {
                     borderRadius: sameSender ? "10px 10px 0px 10px" : "10px 10px 10px 0px" ,
                     padding: "1px 8px",
                     width: "fit-content",
+                    position: 'relative',
                 }}
             >
                 {
-                    !sameSender && <p className='message-sender' >{sender.name}</p>
+                    !sameSender 
+                    &&
+                    <div className="message-avatar">
+                        <img src={sender.avatar.url} alt="img" />
+                    </div>
+                }
+                {
+                    !sameSender && chatDetails.groupChat && <p className='message-sender' >{sender.name}</p>
                 }
 
                 {

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import './layout.css'
 import {
     Add as AddIcon,
@@ -17,6 +17,9 @@ import { notifyError, notifySuccess } from '../../lib/Toasting';
 import Cookies from 'js-cookie';
 
 import logo from '../../assets/image/happinessLogo.png';
+import AvatarCard from '../shared/AvatarCard';
+import { CommonLoader } from './Loaders';
+import moment from 'moment';
 
 const SearchDialog = lazy(()=> import("../specific/Search"))
 const NotificationsDialog = lazy(()=> import("../specific/Notifications"))
@@ -46,6 +49,10 @@ const ChatHeader = ({chatDetails}) => {
     const {myData} = useMyContext();
 
     const { isMobileChat , setIsMobileChat }= useMyContext()
+
+    const [userData, setUserData] = useState({});
+    const [userDataLoading, setUserDataLoading] = useState(false);
+
     const logoutHandler = async ()=> {
     try {
         const {data} = await axios.get(`${server}/api/v1/user/logout` , {withCredentials: true});
@@ -58,15 +65,38 @@ const ChatHeader = ({chatDetails}) => {
     }
 
     useEffect(()=>{
-        console.log(chatDetails)
+        const fetchUserInfo = async ()=> {
+          setUserDataLoading(true);
+          try {
+              console.log(userDataLoading)
+                if(chatDetails.members && !chatDetails.isGroupChat){
+                  const otherMember =  chatDetails.members.find(member => member.toString() != myData._id);
+                  const { data } = await axios.post(
+                      `${server}/api/v1/user/get-user-info`,
+                      {
+                          userId : otherMember,
+                      },
+                      {
+                          withCredentials: true
+                      }
+                  );
+                  setUserData(data.user);
+
+              }
+            } catch (error) {
+              console.log(error);
+            }
+            finally{
+              setUserDataLoading(false);
+              console.log(userData)
+              console.log(userDataLoading)
+            }
+            
+        }
+        fetchUserInfo();
+       
     },[chatDetails])
 
-    const getOtherMember =(members)=>{
-        if(!chatDetails.isGroupChat){
-            const otherMember =  members.find(member => member._id.toString() != myData._id);
-            return otherMember;
-        }
-    }
 
     return (
         <div className='header'>
@@ -91,17 +121,24 @@ const ChatHeader = ({chatDetails}) => {
                     </div>
                 ) :
 
-                (
+                ( 
+                  userDataLoading ?
+                  <CommonLoader/>
+                  :
+                  (
                   <div className="chat-user-info-container">
                     <div className="chat-user-info-image">
-                        
+                      <img src={userData?.avatar?.url} alt="" />
                     </div>
                     <div className="chat-user-info-data">
-
+                        <p className="chat-user-name">{userData.name}</p>
+                        <p className="chat-user-last-active">{moment(userData.lastActive).format("h:mm:ss a, DD/MM/YY")} </p>
                     </div>
+
                   </div>  
+                  )
                 )
-                }
+                }                
             </div>
 
 

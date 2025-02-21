@@ -285,7 +285,7 @@ const Chat = ({ chatId, chatDetails }) => {
         
         {
           allMessages.map((i) => { 
-            return <MessageItem key={i._id} message={i} user={myData} />
+            return <MessageItem key={i._id} message={i} user={myData} chatDetails={chatDetails} />
           })
         }
   
