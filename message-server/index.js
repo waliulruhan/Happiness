@@ -102,6 +102,7 @@ io.on("connection" , (socket)=>{
             sender: {
               _id: user._id,
               name: user.name,
+              avatar: user.avatar
             },
             seen: false,
             chat: chatId,
@@ -112,7 +113,6 @@ io.on("connection" , (socket)=>{
             content: message,
             sender: user._id,
             chat: chatId,
-            avatar: user.avatar,
           }; 
 
         const membersSockets = getSockets(members) 
