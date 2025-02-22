@@ -23,10 +23,10 @@
 }
 .message-avatar{
     position: absolute;
-    left: -14px;
+    left: -17px;
     bottom: 0px;
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,8 +34,8 @@
     overflow: hidden;
 }
 .message-avatar img{
-    height: 12px;
-    width: 12px;
+    height: 15px;
+    width: 15px;
 }
 .message-content{
     margin: 0;

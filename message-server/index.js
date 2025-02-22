@@ -70,7 +70,7 @@ const chatOnlineUsers = new Set();
 const onlineUsers = new Set();
 
 const getSockets = (users) => {
-     return users?.map(userId => userSocketIDs.get(userId.toString())); 
+    return users?.map(userId => userSocketIDs.get(userId.toString())); 
 }
 
 io.use((socket , next)=>{
@@ -78,7 +78,7 @@ io.use((socket , next)=>{
     socket.request,
     socket.request.res,
     async (err) => await socketAuth(err , socket , next)
-   )
+  )
 })
 
 io.on("connection" , (socket)=>{
@@ -107,12 +107,13 @@ io.on("connection" , (socket)=>{
             chat: chatId,
             createdAt: new Date().toISOString(),
           };
-      
+          
           const messageForDB = {
             content: message,
             sender: user._id,
             chat: chatId,
-          };
+            avatar: user.avatar,
+          }; 
 
         const membersSockets = getSockets(members) 
 

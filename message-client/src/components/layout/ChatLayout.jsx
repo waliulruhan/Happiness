@@ -88,7 +88,29 @@ const ChatLayout = () => (WrappedComponent) => {
                 return res.data.friends.map(friend => friend._id);
             },
         });
-
+        
+        const userData = useQuery({
+            queryKey: ['user-data', chatDetails?.members], // Ensure re-fetching on member changes
+            queryFn: async () => {
+                if (chatDetails?.members && !chatDetails.groupChat) {
+                    const otherMember = chatDetails.members.find(member => member.toString() !== myData._id);
+                    if (!otherMember) return null; // Return a safe default value
+        
+                    try {
+                        const { data } = await axios.post(
+                            `${server}/api/v1/user/get-user-info`,
+                            { userId: otherMember },
+                            { withCredentials: true }
+                        );
+                        return data.user;
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        throw new Error("Failed to fetch user data");
+                    }
+                }
+                return null; // Return default value if conditions are not met
+            },
+        });
        useEffect(()=>{
             if(friends?.length > 0 && myData._id){
                 socket.emit(ONLINE_USERS , {friends:[ ...friends , myData._id]})
@@ -156,7 +178,7 @@ const ChatLayout = () => (WrappedComponent) => {
         return(
             <>
                 <Title/>           
-                <ChatHeader chatDetails={chatDetails}/>
+                <ChatHeader userData={userData} chatDetails={chatDetails} />
                 <DeleteChatMenu deleteAnchor={deleteMenuAnchor}/>
                 <div className="layout ">
                     <div className="layout-side">

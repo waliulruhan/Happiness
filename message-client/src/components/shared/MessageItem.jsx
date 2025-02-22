@@ -2,7 +2,7 @@ import moment from 'moment';
 import React, { memo } from 'react';
 import './shared.css'
 import { Box } from '@mui/material';
-import { fileFormat } from '../../lib/features';
+import { fileFormat, transformImage } from '../../lib/features';
 import RenderAttachment from './RenderAttachment';
 import { MessageItemEasterEgg } from '../../lib/esaterEgg';
 import { DoneAll } from '@mui/icons-material';
@@ -33,14 +33,15 @@ const MessageItem = ({ message, user, chatDetails }) => {
                     padding: "1px 8px",
                     width: "fit-content",
                     position: 'relative',
+                    margin: sameSender ? "0px" : "10px"  ,
                 }}
             >
                 {
                     !sameSender 
                     &&
                     <div className="message-avatar">
-                        <img src={sender.avatar.url} alt="img" />
-                    </div>
+                        <img src={transformImage(sender.avatar.url, 50)} alt="img" />
+                    </div> 
                 }
                 {
                     !sameSender && chatDetails.groupChat && <p className='message-sender' >{sender.name}</p>
