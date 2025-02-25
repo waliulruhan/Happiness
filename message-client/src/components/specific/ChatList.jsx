@@ -18,7 +18,7 @@ const ChatList = ({
     w="100%",
     handleDeleteChat,
 }) => {
-    const { myData } = useMyContext();
+    const { myData, setIsChatoverview } = useMyContext();
     
     const chatListVariants = {
         hidden: {

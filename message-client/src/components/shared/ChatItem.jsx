@@ -42,7 +42,7 @@ const ChatItem = ({
         whileTap={{scale:.95}}
 
           onContextMenu={(e)=> handleDeleteChat(e , _id , groupChat )}
-          onClick={()=> navigate(`/chat/${_id}`)}
+          onClick={()=>{ navigate(`/chat/${_id}`) ; setIsChatoverview(false)}}
           style={{
             display: "flex",
             gap: "10px",

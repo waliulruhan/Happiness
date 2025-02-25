@@ -102,8 +102,7 @@ io.on("connection" , (socket)=>{
             sender: {
               _id: user._id,
               name: user.name,
-              avatar: user.avatar
-            },
+              avatar: user.avatar            },
             seen: false,
             chat: chatId,
             createdAt: new Date().toISOString(),

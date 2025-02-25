@@ -12,7 +12,9 @@
     flex-direction: column;
     height: calc( 100dvh - 48px);
     max-height: calc( 100dvh - 48px);
-    background: linear-gradient( 333deg, #f8fff1, #c6ffd7); 
+    background: linear-gradient( 333deg, #f8fff1, #c6ffd7);
+    width: 100%; 
+    position: relative;
 }
 .layout-side{
     flex: .4;

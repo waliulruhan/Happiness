@@ -12,6 +12,7 @@ export const MyContextProvider = ({ children }) => {
    const [myData , setMyData] = useState({})
    const [isAdmin , setIsAdmin] = useState(false)
    const [isDeleteMenu , setIsDeleteMenu] = useState(false)
+   const [isChatoverview , setIsChatoverview] = useState(false)
    const [selectedDeleteChat , setSelectedDeleteChat] = useState({})
    
 
@@ -27,7 +28,7 @@ export const MyContextProvider = ({ children }) => {
 
 
 
- const data= { selectedDeleteChat , setSelectedDeleteChat ,isDeleteMenu , setIsDeleteMenu ,newMessageAlert , setNewMessageAlert , notificationCount , setNotificationCount , myData , setMyData , isMobileChat , setIsMobileChat , isAdmin , setIsAdmin ,isNewGroup , setIsNewGroup , isSearch , setIsSearch , isMobile , setIsMobie ,isNotification , setIsNotification }
+ const data= { isChatoverview, setIsChatoverview, selectedDeleteChat , setSelectedDeleteChat ,isDeleteMenu , setIsDeleteMenu ,newMessageAlert , setNewMessageAlert , notificationCount , setNotificationCount , myData , setMyData , isMobileChat , setIsMobileChat , isAdmin , setIsAdmin ,isNewGroup , setIsNewGroup , isSearch , setIsSearch , isMobile , setIsMobie ,isNotification , setIsNotification }
 
 
   return (

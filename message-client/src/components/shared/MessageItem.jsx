@@ -33,7 +33,7 @@ const MessageItem = ({ message, user, chatDetails }) => {
                     padding: "1px 8px",
                     width: "fit-content",
                     position: 'relative',
-                    margin: sameSender ? "0px" : "10px"  ,
+                    margin: sameSender ? "0px" : "0 10px"  ,
                 }}
             >
                 {

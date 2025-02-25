@@ -48,9 +48,8 @@ const ChatHeader = ({userData, chatDetails}) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const {myData} = useMyContext();
 
-    const { isMobileChat , setIsMobileChat }= useMyContext()
+    const { isMobileChat , setIsMobileChat, setIsChatoverview, myData }= useMyContext()
 
     // const [userData, setUserData] = useState({});
     // const [userDataLoading, setUserDataLoading] = useState(false);
@@ -103,7 +102,7 @@ const ChatHeader = ({userData, chatDetails}) => {
     return (
         <div className='header'>
             <div className="header-logo flex-con">
-                <p style={{fontWeight:"700"}} onClick={()=>{ location.pathname !== "/" && navigate('/')}}>Happiness</p>
+                <p style={{fontWeight:"700"}} onClick={()=>{ location.pathname !== "/" && navigate('/'); setIsChatoverview(false)}}>Happiness</p>
             </div>
             <div className="header-menu">
             <IconBtn
@@ -132,7 +131,7 @@ const ChatHeader = ({userData, chatDetails}) => {
                     <div className="chat-user-info-image">
                       <img src={transformImage(userInfo?.avatar?.url)} alt="" />
                     </div>
-                    <div className="chat-user-info-data">
+                    <div className="chat-user-info-data" onClick={()=> setIsChatoverview((prev)=> !prev)}>
                         <p className="chat-user-name">{userInfo.name}</p>
                         <p className="chat-user-last-active">{moment(userInfo.lastActive).format("h:mm:ss a, DD/MM/YY")} </p>
                     </div>
@@ -144,7 +143,7 @@ const ChatHeader = ({userData, chatDetails}) => {
 
 
             <div className="chat-header-icons">
-                <img src={logo} alt="logo" className="header-image" onClick={()=> { location.pathname !== "/" && navigate('/') }} />
+                <img src={logo} alt="logo" className="header-image" onClick={()=> { location.pathname !== "/" && navigate('/'); setIsChatoverview(false) }} />
             </div>
         </div>
     );

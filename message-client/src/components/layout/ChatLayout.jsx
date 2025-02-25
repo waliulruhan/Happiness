@@ -19,6 +19,8 @@ import {notifyError} from "../../lib/Toasting"
 import { useInputValidation } from '6pp';
 import { CommonLoader } from './Loaders';
 import ChatHeader from './ChatHeader';
+import ChatOverview from '../specific/ChatOverview';
+import { AnimatePresence } from 'framer-motion';
 const ChatLayout = () => (WrappedComponent) => {
     return(props)=>{
         const {chatId} =useParams()
@@ -31,7 +33,7 @@ const ChatLayout = () => (WrappedComponent) => {
         const [chatDetails, setChatDetails] = useState({})
 
 
-        const {setSelectedDeleteChat,isDeleteMenu , setIsDeleteMenu, isMobileChat , setIsMobileChat , myData , setMyData , notificationCount,setNotificationCount , newMessageAlert , setNewMessageAlert}= useMyContext()
+        const {isChatoverview,setIsChatoverview, setSelectedDeleteChat,isDeleteMenu , setIsDeleteMenu, isMobileChat , setIsMobileChat , myData , setMyData , notificationCount,setNotificationCount , newMessageAlert , setNewMessageAlert}= useMyContext()
         
         const deleteMenuAnchor = useRef(null)
 
@@ -200,6 +202,11 @@ const ChatLayout = () => (WrappedComponent) => {
                         }
                     </div>
                     <div className="layout-main">
+                        
+                        <AnimatePresence>
+                            {isChatoverview && <ChatOverview/>}
+                        </AnimatePresence>
+
                         <WrappedComponent {...props} chatId={chatId} chatDetails={chatDetails}/>
                     </div>
                 </div>

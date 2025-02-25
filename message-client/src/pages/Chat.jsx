@@ -272,7 +272,7 @@ const Chat = ({ chatId, chatDetails }) => {
           overflowY: "auto",
           flex: '.9',
           display:'flex',
-          gap:'1rem',
+          gap:'.5rem',
           flexDirection:'column',
           padding:'1rem'
         }}
