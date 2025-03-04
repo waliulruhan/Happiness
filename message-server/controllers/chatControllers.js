@@ -316,6 +316,7 @@ const deleteChat = TryCatch(async(req , res ,next)=>{
     const public_ids = [];
     messagesWithAttachments.forEach(({ attachments }) =>
     attachments.forEach(({ public_id }) => public_ids.push(public_id))
+    
     );
 
     await Promise.all([
@@ -361,9 +362,18 @@ const getMessages = TryCatch(async(req, res , next)=>{
 
 })
 
-
-
-
+const getChatOverview = TryCatch(async(req , res ,next)=>{
+        const { chatId } = req.body;
+        const messagesCount = Message.countDocuments({ chat: chatId });
+              
+        return res.status(200).json({
+            success: true,
+            messagesCount,
+        });  
+    })
+    
+// const attatchments = Message.find({ attachments: { $ne: [] } });
+    
 module.exports={
     newGroupChat,
     getMyChats,
@@ -376,4 +386,5 @@ module.exports={
     renameGroup,
     deleteChat,
     getMessages,
+    getChatOverview,
 }

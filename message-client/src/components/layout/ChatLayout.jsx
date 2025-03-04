@@ -204,7 +204,7 @@ const ChatLayout = () => (WrappedComponent) => {
                     <div className="layout-main">
                         
                         <AnimatePresence>
-                            {isChatoverview && <ChatOverview/>}
+                            {isChatoverview && <ChatOverview chatId={chatId}  chatDetails={chatDetails} />}
                         </AnimatePresence>
 
                         <WrappedComponent {...props} chatId={chatId} chatDetails={chatDetails}/>

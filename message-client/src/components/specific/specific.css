@@ -22,6 +22,12 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    background-color: rgb(205, 247, 181);
-    z-index: 100;
+    background-color: rgb(225, 255, 207);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+.chat-overview-header{
+    background-color: red;
+    height: 40px;
 }

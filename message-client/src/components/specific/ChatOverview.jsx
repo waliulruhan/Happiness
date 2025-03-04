@@ -1,14 +1,17 @@
 import './specific.css';
-import { Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import React from 'react';
 import ChatItem from '../shared/ChatItem';
 import { useMyContext } from '../../utils/context';
 import {motion} from "framer-motion"
+import { Close, CropSquareSharp } from '@mui/icons-material';
 
 const ChatOverview = ({
-    
+    chatId,
+    chatDetails,
 }) => {
     const { myData, setIsChatoverview } = useMyContext();
+    console.log(chatDetails)
     
     const ChatOverviewVariants = {
         hidden: {
@@ -42,14 +45,26 @@ const ChatOverview = ({
             animate="visible"
             exit="hidden"
 
-            //  height={'100%'}
-            //   overflow={'auto'}
-            //    width={w}
-            //     bgcolor='#f7fdf0'
-
             className='chat-overview-container'  
             >
-               <p>Eita ekhono banao hoynai shona. banano hosse. wait koren.</p> 
+               <div className="chat-overview-header">
+                 <IconButton onClick={()=> setIsChatoverview(false) }>
+                    <Close /> 
+                 </IconButton>
+               </div>
+               <div className="chat-overview-main">
+                    <div className="chat-overview-1">
+                        <div className="chat-overview-photo">
+                            <img src="" alt='img' />
+                        </div>
+                        <div className="chat-overview-name">
+                            <p>{'name'}</p>
+                        </div>
+                    </div>
+                    <div className="chat-overview-2">
+
+                    </div>
+               </div>
             </motion.div>
     );
 };
