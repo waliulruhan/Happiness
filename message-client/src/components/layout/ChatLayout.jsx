@@ -31,7 +31,8 @@ const ChatLayout = () => (WrappedComponent) => {
         const [chatOnlineUsers , setChatOnlineUsers] = useState([])
         const [onlineUsers , setOnlineUsers] = useState([])
         const [chatDetails, setChatDetails] = useState({})
-
+        
+        const [isChatDetailsLoading, setIsChatDetailsLoading] = useState(false)
 
         const {isChatoverview,setIsChatoverview, setSelectedDeleteChat,isDeleteMenu , setIsDeleteMenu, isMobileChat , setIsMobileChat , myData , setMyData , notificationCount,setNotificationCount , newMessageAlert , setNewMessageAlert}= useMyContext()
         
@@ -82,42 +83,34 @@ const ChatLayout = () => (WrappedComponent) => {
             getOrSaveFromStorage({key: 'NOTIFICATION_COUNT' , value: notificationCount })
         },[notificationCount])  
 
-
-        const { data: friends  } = useQuery({
-            queryKey: ['friends'],
-            queryFn: async () => {
-                const res = await axios.get(`${server}/api/v1/user/friends`, { withCredentials: true });
-                return res.data.friends.map(friend => friend._id);
-            },
-        });
         
-        const userData = useQuery({
-            queryKey: ['user-data', chatDetails?.members], // Ensure re-fetching on member changes
-            queryFn: async () => {
-                if (chatDetails?.members && !chatDetails.groupChat) {
-                    const otherMember = chatDetails.members.find(member => member.toString() !== myData._id);
-                    if (!otherMember) return null; // Return a safe default value
+    //     const userData = useQuery({
+    //         queryKey: ['user-data', chatDetails?.members], // Ensure re-fetching on member changes
+    //         queryFn: async () => {
+    //             if (chatDetails?.members && !chatDetails.groupChat) {
+    //                 const otherMember = chatDetails.members.find(member => member.toString() !== myData._id);
+    //                 if (!otherMember) return null; // Return a safe default value
         
-                    try {
-                        const { data } = await axios.post(
-                            `${server}/api/v1/user/get-user-info`,
-                            { userId: otherMember },
-                            { withCredentials: true }
-                        );
-                        return data.user;
-                    } catch (error) {
-                        console.error("Error fetching user data:", error);
-                        throw new Error("Failed to fetch user data");
-                    }
-                }
-                return null; // Return default value if conditions are not met
-            },
-        });
-       useEffect(()=>{
-            if(friends?.length > 0 && myData._id){
-                socket.emit(ONLINE_USERS , {friends:[ ...friends , myData._id]})
-            }
-        },[friends , myData])
+    //                 try {
+    //                     const { data } = await axios.post(
+    //                         `${server}/api/v1/user/get-user-info`,
+    //                         { userId: otherMember },
+    //                         { withCredentials: true }
+    //                     );
+    //                     return data.user;
+    //                 } catch (error) {
+    //                     console.error("Error fetching user data:", error);
+    //                     throw new Error("Failed to fetch user data");
+    //                 }
+    //             }
+    //             return null; // Return default value if conditions are not met
+    //         },
+    //     });
+    //    useEffect(()=>{
+    //         if(friends?.length > 0 && myData._id){
+    //             socket.emit(ONLINE_USERS , {friends:[ ...friends , myData._id]})
+    //         }
+    //     },[friends , myData])
 
 
           // socket event handling
@@ -162,11 +155,14 @@ const ChatLayout = () => (WrappedComponent) => {
       
           
         const fetchChatDetails = async () => {
+            setIsChatDetailsLoading(true);
         try {
             const { data } = await axios.get(`${server}/api/v1/chat/${chatId}`, { withCredentials: true });
             setChatDetails(data.chat);
         } catch (err) {
             notifyError(err.response.data.message || "Something went wrong")
+        }finally{
+            setIsChatDetailsLoading(false)
         }
         };  
 
@@ -180,7 +176,7 @@ const ChatLayout = () => (WrappedComponent) => {
         return(
             <>
                 <Title/>           
-                <ChatHeader userData={userData} chatDetails={chatDetails} />
+                <ChatHeader chatDetails={chatDetails} isChatDetailsLoading={isChatDetailsLoading} />
                 <DeleteChatMenu deleteAnchor={deleteMenuAnchor}/>
                 <div className="layout ">
                     <div className="layout-side">
@@ -204,7 +200,7 @@ const ChatLayout = () => (WrappedComponent) => {
                     <div className="layout-main">
                         
                         <AnimatePresence>
-                            {isChatoverview && <ChatOverview chatId={chatId}  chatDetails={chatDetails} />}
+                            {isChatoverview && <ChatOverview chatId={chatId}  chatDetails={chatDetails}  isChatDetailsLoading={isChatDetailsLoading} />}
                         </AnimatePresence>
 
                         <WrappedComponent {...props} chatId={chatId} chatDetails={chatDetails}/>

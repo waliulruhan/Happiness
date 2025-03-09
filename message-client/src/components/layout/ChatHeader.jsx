@@ -42,17 +42,25 @@ const NewGroupDialog = lazy(()=> import("../specific/NewGroup"))
       </Tooltip>
     );
   };
-const ChatHeader = ({userData, chatDetails}) => {
-  const {isLoading, data:userInfo} = userData;
-    
+const ChatHeader = ({chatDetails, isChatDetailsLoading}) => {
+  // const {isLoading, data:userInfo} = userData;
+
+  
     const navigate = useNavigate();
     const location = useLocation();
-
-
+    
+    
     const { isMobileChat , setIsMobileChat, setIsChatoverview, myData }= useMyContext()
+    
 
-    // const [userData, setUserData] = useState({});
-    // const [userDataLoading, setUserDataLoading] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+
+    useEffect(() => {
+      if (chatDetails && Array.isArray(chatDetails.members)) {
+        const foundUser = chatDetails.members.find(i => i._id !== myData._id);
+        setUserInfo(foundUser);
+      }
+    }, [chatDetails, myData]);
 
     const logoutHandler = async ()=> {
     try {
@@ -64,39 +72,6 @@ const ChatHeader = ({userData, chatDetails}) => {
         notifyError(error.response.data.message || "Something went wrong")
     }    
     }
-
-    // useEffect(()=>{
-    //     const fetchUserInfo = async ()=> {
-    //       setUserDataLoading(true);
-    //       try {
-    //           console.log(userDataLoading)
-    //             if(chatDetails.members && !chatDetails.groupChat){
-    //               const otherMember =  chatDetails.members.find(member => member.toString() != myData._id);
-    //               const { data } = await axios.post(
-    //                   `${server}/api/v1/user/get-user-info`,
-    //                   {
-    //                       userId : otherMember,
-    //                   },
-    //                   {
-    //                       withCredentials: true
-    //                   }
-    //               );
-    //               setUserData(data.user);
-
-    //           }
-    //         } catch (error) {
-    //           console.log(error);
-    //         }
-    //         finally{
-    //           setUserDataLoading(false);
-    //           console.log(userData)
-    //           console.log(userDataLoading)
-    //         }
-            
-    //     }
-    //     fetchUserInfo();
-       
-    // },[chatDetails])
 
 
     return (
@@ -123,13 +98,13 @@ const ChatHeader = ({userData, chatDetails}) => {
                 ) :
 
                 ( 
-                  isLoading || userInfo === null ?
+                  userInfo === null || isChatDetailsLoading ?
                   <CommonLoader/>
                   :
                   (
                   <div className="chat-user-info-container">
                     <div className="chat-user-info-image">
-                      <img src={transformImage(userInfo?.avatar?.url)} alt="" />
+                      <img src={transformImage(userInfo?.avatar)} alt="" />
                     </div>
                     <div className="chat-user-info-data" onClick={()=> setIsChatoverview((prev)=> !prev)}>
                         <p className="chat-user-name">{userInfo.name}</p>

@@ -243,30 +243,35 @@ const sendAttachments = TryCatch(async(req , res , next)=>{
     })
 })
 
-const getChatDetails = TryCatch(async(req , res ,next)=>{
-    if(req.query.populate === "true"){
-        const chat = await Chat.findById(req.params.id).populate("members" ,"name avatar").lean()
-        if (!chat) return next(new ErrorHandler("Chat not found", 404));
+const getChatDetails = TryCatch(async (req, res, next) => {
+   
+    let chatQuery = Chat.findById(req.params.id);
 
-        chat.members = chat.members.map(({_id, name ,avatar})=>({
+    
+    if (req.query.populate === "true" || !chatQuery.groupChat) {
+        chatQuery = chatQuery.populate("members", "name avatar lastActive");
+    }
+
+    
+    const chat = await chatQuery.lean();  
+    
+   
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+    if (chat.members) {
+        chat.members = chat.members.map(({ _id, name, avatar }) => ({
             _id,
             name,
-            avatar: avatar.url,
-        }))
-
-        return res.status(200).json({
-            success: true,
-            chat,
-          });
-    }else{
-        const chat = await Chat.findById(req.params.id);
-        if (!chat) return next(new ErrorHandler("Chat not found", 404));
-        return res.status(200).json({
-            success: true,
-            chat,
-          });
+            avatar: avatar.url, 
+        }));
     }
-})
+    
+    return res.status(200).json({
+        success: true,
+        chat,
+    });
+});
+
 
 const renameGroup = TryCatch(async(req , res ,next)=>{
     const chatId = req.params.id;
@@ -362,15 +367,22 @@ const getMessages = TryCatch(async(req, res , next)=>{
 
 })
 
-const getChatOverview = TryCatch(async(req , res ,next)=>{
-        const { chatId } = req.body;
-        const messagesCount = Message.countDocuments({ chat: chatId });
-              
+const getChatOverview = TryCatch(async (req, res, next) => {
+    const { chatId } = req.body;
+
+    try {
+        // Await the countDocuments to get the result as a number
+        const messagesCount = await Message.countDocuments({ chat: chatId });
+
+        // Return the count as a JSON response
         return res.status(200).json({
             success: true,
             messagesCount,
-        });  
-    })
+        });
+    } catch (error) {
+        next(error); // Pass the error to the error-handling middleware
+    }
+});
     
 // const attatchments = Message.find({ attachments: { $ne: [] } });
     

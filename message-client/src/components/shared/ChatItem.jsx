@@ -4,6 +4,7 @@ import React, { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AvatarCard from './AvatarCard';
 import {motion} from "framer-motion"
+import { useMyContext } from '../../utils/context';
 
 const ChatItem = ({
     avatar =[],
@@ -17,7 +18,9 @@ const ChatItem = ({
     handleDeleteChat,
     isOnline,
 }) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    const { setIsChatoverview } = useMyContext();
 
     const chatItemVariants ={
       hidden: {

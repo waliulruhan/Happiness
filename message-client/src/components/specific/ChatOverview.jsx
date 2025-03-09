@@ -1,14 +1,19 @@
 import './specific.css';
-import { IconButton, Stack } from '@mui/material';
-import React from 'react';
-import ChatItem from '../shared/ChatItem';
+import { Button, IconButton, Stack } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useMyContext } from '../../utils/context';
 import {motion} from "framer-motion"
-import { Close, CropSquareSharp } from '@mui/icons-material';
+import { Attachment, Close, CropSquareSharp } from '@mui/icons-material';
+import './specific.css';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { server } from '../constants/config';
+import moment from 'moment';
 
 const ChatOverview = ({
     chatId,
     chatDetails,
+    isChatDetailsLoading
 }) => {
     const { myData, setIsChatoverview } = useMyContext();
     console.log(chatDetails)
@@ -37,6 +42,41 @@ const ChatOverview = ({
         },
       };
 
+    const [userInfo, setUserInfo] = useState(null);
+    const [isAttachmentModal, setIsAttachmentModal] = useState(false);
+
+    useEffect(() => {
+      if (chatDetails && Array.isArray(chatDetails.members)) {
+        const foundUser = chatDetails.members.find(i => i._id !== myData._id);
+        setUserInfo(foundUser);
+      }
+    }, [chatDetails, myData]);
+    
+    const { data: chatOverviewData, isLoading: isChatOverviewLoading, error } = useQuery({
+              queryKey: ['chat-overview-data', chatDetails?._id],
+              queryFn: async () => {
+                  if (chatDetails) {
+                      try {
+                          const { data } = await axios.post(
+                              `${server}/api/v1/chat/chat-overview`,
+                              { chatId: chatDetails._id },
+                              { withCredentials: true }
+                          );
+                          console.log(data);
+                          return data;
+                      } catch (error) {
+                          console.error("Error fetching chat overview data:", error);
+                          throw new Error("Failed to fetch chat overview data");
+                      }
+                  }
+              },
+          });
+
+    // useState(()=>{
+    //   if(chatDetails._id){
+    //     chat
+    //   }
+    // },[chatDetails]);
 
     return (
             <motion.div
@@ -53,17 +93,46 @@ const ChatOverview = ({
                  </IconButton>
                </div>
                <div className="chat-overview-main">
-                    <div className="chat-overview-1">
+                    {
+
+                      isChatDetailsLoading || userInfo == null 
+                      ?
+
+                      'loading hosse babu'
+                      :
+
+                      <div className="chat-overview-1">
                         <div className="chat-overview-photo">
-                            <img src="" alt='img' />
+                            <img src={userInfo.avatar} alt='img' />
                         </div>
                         <div className="chat-overview-name">
-                            <p>{'name'}</p>
+                            <p>{userInfo.name}</p>
                         </div>
                     </div>
+                    }
+                    
                     <div className="chat-overview-2">
-
+                        <div className="chat-overview-item">
+                          <Button variant='text'  sx={{color: 'black', display:'flex', gap:'10px', width: '100%', justifyContent:"start"}} >
+                            <Attachment/>
+                            <p>Attatchments</p>
+                          </Button>
+                        </div>
                     </div>
+               </div>
+               <div className="chat-overview-footer">
+                
+                  {isChatOverviewLoading ? (
+                        <p>Loading..</p>
+                    ) : error ? (
+                        <p>Error fetching chat overview data.</p>
+                    ) : (
+                        <>
+                            <p>Messages: <br /> {chatOverviewData?.messagesCount}</p>
+                        </>
+                  )}
+
+                  <p>Created On: <br /> {moment(chatDetails.createdAt).format("h:mm:ss a, DD/MM/YY")}</p>
                </div>
             </motion.div>
     );
