@@ -105,10 +105,10 @@ const Chat = ({ chatId, chatDetails }) => {
     if (allMessages ) {
       const lastMessageFromOtherUser = allMessages.length > 0 && allMessages[allMessages.length - 1].sender._id !== myData._id;
       
-      if(lastMessageFromOtherUser && chatDetails.members && chatDetails.members.length > 0){
+      if(lastMessageFromOtherUser && chatDetails.membersRaw && chatDetails.membersRaw.length > 0){
         socket.emit(MARK_MESSAGE_AS_SEEN , {
           chatId ,
-          members: chatDetails.members,
+          members: chatDetails.membersRaw,
         })
       }
     }   
@@ -117,8 +117,8 @@ const Chat = ({ chatId, chatDetails }) => {
 
 
   useEffect(() => {
-    if (chatDetails.members && chatDetails.members.length > 0) {
-      socket.emit(CHAT_JOINED, { userId: myData._id, members: chatDetails.members });
+    if (chatDetails.membersRaw && chatDetails.membersRaw.length > 0) {
+      socket.emit(CHAT_JOINED, { userId: myData._id, members: chatDetails.membersRaw });
     }
   }, [chatDetails]);
 
@@ -126,14 +126,14 @@ const Chat = ({ chatId, chatDetails }) => {
     setMessage(e.target.value);
 
     if (!IamTyping) {
-      socket.emit(START_TYPING, { members: chatDetails.members, chatId });
+      socket.emit(START_TYPING, { members: chatDetails.membersRaw, chatId });
       setIamTyping(true)
     }
 
     if (typingTimeout.current) clearTimeout(typingTimeout.current)
 
     typingTimeout.current = setTimeout(() => {
-      socket.emit(STOP_TYPING, { members: chatDetails.members, chatId });
+      socket.emit(STOP_TYPING, { members: chatDetails.membersRaw, chatId });
       setIamTyping(false)
     }, [2000])
 
@@ -159,10 +159,10 @@ const Chat = ({ chatId, chatDetails }) => {
   
 
       // doing this so that real time messages aso become marked as seen
-      if( data.message.sender._id !== myData._id && chatDetails.members && chatDetails.members.length > 0){
+      if( data.message.sender._id !== myData._id && chatDetails.membersRaw && chatDetails.membersRaw.length > 0){
         socket.emit(MARK_MESSAGE_AS_SEEN , {
           chatId ,
-          members: chatDetails.members,
+          members: chatDetails.membersRaw,
         })
       }
     }
@@ -240,7 +240,7 @@ const Chat = ({ chatId, chatDetails }) => {
     e.preventDefault()
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return notifyError('no message');
-    socket.emit(NEW_MESSAGE, { chatId, members: chatDetails.members, message: trimmedMessage });
+    socket.emit(NEW_MESSAGE, { chatId, members: chatDetails.membersRaw, message: trimmedMessage });
     setMessage("");
     setUserTyping(false);
 

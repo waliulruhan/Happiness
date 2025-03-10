@@ -259,11 +259,13 @@ const getChatDetails = TryCatch(async (req, res, next) => {
     if (!chat) return next(new ErrorHandler("Chat not found", 404));
 
     if (chat.members) {
-        chat.members = chat.members.map(({ _id, name, avatar }) => ({
+        chat.members = chat.members.map(({ _id, name, avatar, lastActive }) => ({
             _id,
             name,
-            avatar: avatar.url, 
+            avatar: avatar.url,
+            lastActive 
         }));
+        chat.membersRaw = chat.members.map(member => member._id);
     }
     
     return res.status(200).json({
@@ -371,20 +373,72 @@ const getChatOverview = TryCatch(async (req, res, next) => {
     const { chatId } = req.body;
 
     try {
-        // Await the countDocuments to get the result as a number
         const messagesCount = await Message.countDocuments({ chat: chatId });
 
-        // Return the count as a JSON response
         return res.status(200).json({
             success: true,
             messagesCount,
         });
     } catch (error) {
-        next(error); // Pass the error to the error-handling middleware
+        next(error); 
     }
 });
-    
-// const attatchments = Message.find({ attachments: { $ne: [] } });
+
+const getAttachments = TryCatch(async (req, res, next) => {
+    const { chatId } = req.body;
+
+    try {
+        // Fetch the messages with attachments for the given chatId
+        const messages = await Message.find({ chat: chatId, attachments: { $ne: [] } });
+
+        // Function to sort attachments based on their extension
+        const sortAttachments = (attachments) => {
+            const categorizedFiles = {
+                images: [],
+                audios: [],
+                videos: [],
+                files: [],
+            };
+
+            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+            const audioExtensions = ['mp3', 'wav', 'ogg', 'flac'];
+            const videoExtensions = ['mp4', 'avi', 'mkv', 'mov', 'webm'];
+
+            // Loop through the attachments and sort based on file extension
+            attachments.forEach((attachment) => {
+                const fileExtension = attachment.url.split('.').pop().toLowerCase();
+                
+                if (imageExtensions.includes(fileExtension)) {
+                    categorizedFiles.images.push(attachment.url);
+                } else if (audioExtensions.includes(fileExtension)) {
+                    categorizedFiles.audio.push(attachment.url);
+                } else if (videoExtensions.includes(fileExtension)) {
+                    categorizedFiles.video.push(attachment.url);
+                } else {
+                    categorizedFiles.files.push(attachment.url);
+                }
+            });
+
+            return categorizedFiles;
+        };
+
+        // Flatten all attachments across messages
+        const allAttachments = messages.flatMap((message) => message.attachments);
+
+        // Sort the attachments into categories
+        const sortedAttachments = sortAttachments(allAttachments);
+
+        // Send the categorized attachments back in the response
+        return res.status(200).json({
+            success: true,
+            attachments: sortedAttachments,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
     
 module.exports={
     newGroupChat,
@@ -399,4 +453,5 @@ module.exports={
     deleteChat,
     getMessages,
     getChatOverview,
+    getAttachments
 }

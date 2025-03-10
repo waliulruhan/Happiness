@@ -2,13 +2,13 @@ import './specific.css';
 import { Button, IconButton, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useMyContext } from '../../utils/context';
-import {motion} from "framer-motion"
-import { Attachment, Close, CropSquareSharp } from '@mui/icons-material';
-import './specific.css';
+import {motion, AnimatePresence} from "framer-motion"
+import { Attachment, Close,  } from '@mui/icons-material';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { server } from '../constants/config';
 import moment from 'moment';
+import AttachmentModal from '../shared/AttahmentModal';
 
 const ChatOverview = ({
     chatId,
@@ -87,6 +87,11 @@ const ChatOverview = ({
 
             className='chat-overview-container'  
             >
+
+                <AnimatePresence>
+                    {isAttachmentModal && <AttachmentModal chatId={chatId}  setIsAttachmentModal={setIsAttachmentModal} />}
+                </AnimatePresence>
+
                <div className="chat-overview-header">
                  <IconButton onClick={()=> setIsChatoverview(false) }>
                     <Close /> 
@@ -113,9 +118,9 @@ const ChatOverview = ({
                     
                     <div className="chat-overview-2">
                         <div className="chat-overview-item">
-                          <Button variant='text'  sx={{color: 'black', display:'flex', gap:'10px', width: '100%', justifyContent:"start"}} >
+                          <Button onClick={()=> setIsAttachmentModal(true)} variant='text'  sx={{color: 'black', display:'flex', gap:'10px', width: '100%', justifyContent:"start"}} >
                             <Attachment/>
-                            <p>Attatchments</p>
+                            <p>Attachments</p>
                           </Button>
                         </div>
                     </div>
